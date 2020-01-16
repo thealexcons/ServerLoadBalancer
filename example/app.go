@@ -55,7 +55,7 @@ func main() {
 	}
 
 	// Start health checking routine every 2 minutes, with a timeout of 3 seconds
-	sg.StartHealthChecker(time.Minute*2, time.Second*3)
+	sg.StartHealthChecker(time.Minute*1, time.Second*3)
 
 	// Start the server
 	err = server.ListenAndServe()

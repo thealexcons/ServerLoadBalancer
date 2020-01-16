@@ -2,6 +2,7 @@ package loadbalancer
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -133,11 +134,13 @@ func (s *ServerGroup) LoadBalancer(w http.ResponseWriter, r *http.Request) {
 	if attempts > s.retries {
 		log.Printf("%s(%s) Max attempts reached, terminating\n", r.RemoteAddr, r.URL.Path)
 		http.Error(w, "The service is unavailable.", http.StatusServiceUnavailable)
+		return
 	}
 
 	node := s.getNextNode()
 	if node != nil {
 		node.revProxy.ServeHTTP(w, r)
+		fmt.Println("Request redirected to " + node.address.String())
 		return
 	}
 	http.Error(w, "The service is unavailable.", http.StatusServiceUnavailable)
@@ -168,7 +171,9 @@ func (s *ServerGroup) StartHealthChecker(refreshRate time.Duration, timeout time
 		for {
 			select {
 			case <-clock.C:
+				fmt.Println("\n==================== HEALTH REPORT ====================")
 				s.checkAndUpdateHealth(timeout)
+				fmt.Println("========================================================")
 			}
 		}
 	}()

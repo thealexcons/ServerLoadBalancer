@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	attempts = iota
+	attempts int = iota
 	retry
 )
 

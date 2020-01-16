@@ -11,13 +11,15 @@ import (
 func main() {
 	// Create the server group and add nodes to it
 	sg := &loadbalancer.ServerGroup{}
-	sg.AddNode("localhost:4311", 1)
+	sg.AddNode("http://localhost:1232", 1)
 	// this node has weight 2 (will receive twice the no. of requests compared to other nodes)
-	sg.AddNode("localhost:1232", 2)
-	sg.AddNode("localhost:4192", 1)
+	sg.AddNode("http://localhost:4192", 2)
+	sg.AddNode("http://localhost:4311", 1)
+
+	sg.SetRetries(3)
 
 	// Spin up the example nodes above
-	go runExampleNodeServers()
+	runExampleNodeServers()
 
 	// Create the server at port 8080 and handle requests using the
 	// load balanacer
@@ -27,7 +29,7 @@ func main() {
 	}
 
 	// Start health checking routine every 2 minutes, with a timeout of 3 seconds
-	sg.StartHealthChecker(time.Minute*2, time.Second*3)
+	sg.StartHealthChecker(time.Second*30, time.Second*3)
 
 	// Start the server
 	err := server.ListenAndServe()
@@ -43,21 +45,22 @@ func runExampleNodeServers() {
 		Addr:    ":4311",
 		Handler: http.HandlerFunc(exampleHandler),
 	}
-	server1.ListenAndServe()
+	go server1.ListenAndServe()
 
 	server2 := &http.Server{
 		Addr:    ":1232",
 		Handler: http.HandlerFunc(exampleHandler),
 	}
-	server2.ListenAndServe()
+	go server2.ListenAndServe()
 
 	server3 := &http.Server{
 		Addr:    ":4192",
 		Handler: http.HandlerFunc(exampleHandler),
 	}
-	server3.ListenAndServe()
+	go server3.ListenAndServe()
 }
 
 func exampleHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "You reached node "+r.Host, nil)
+	fmt.Println("Received request at " + r.URL.Host)
+	fmt.Fprintf(w, "Serve content at "+r.URL.Path)
 }
