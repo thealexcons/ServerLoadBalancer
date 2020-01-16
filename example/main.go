@@ -28,7 +28,7 @@ func main() {
 		Handler: http.HandlerFunc(sg.LoadBalancer),
 	}
 
-	// Start health checking routine every 2 minutes, with a timeout of 3 seconds
+	// Start health checking routine every 30 seconds, with a timeout of 3 seconds
 	sg.StartHealthChecker(time.Second*30, time.Second*3)
 
 	// Start the server
