@@ -9,16 +9,16 @@ const (
 	retry
 )
 
-// GetAttemptsFromContext returns the attempts for request
-func GetAttemptsFromContext(r *http.Request) int {
+// getAttemptsFromContext returns the attempts for request
+func getAttemptsFromContext(r *http.Request) int {
 	if attempts, ok := r.Context().Value(attempts).(int); ok {
 		return attempts
 	}
 	return 1
 }
 
-// GetRetryFromContext returns the retry for request
-func GetRetryFromContext(r *http.Request) int {
+// getRetryFromContext returns the retry for request
+func getRetryFromContext(r *http.Request) int {
 	if retry, ok := r.Context().Value(retry).(int); ok {
 		return retry
 	}

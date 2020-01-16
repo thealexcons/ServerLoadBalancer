@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/thealexcons/ServerLoadBalancer"
+	loadbalancer "github.com/thealexcons/ServerLoadBalancer"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	}
 	nodes := strings.Split(string(data), "\n")
 
-	sg := &ServerGroup{}
+	sg := &loadbalancer.ServerGroup{}
 	sg.SetRetries(3)
 
 	// Add nodes from file to ServerGroup
@@ -50,7 +50,7 @@ func main() {
 	}
 
 	server := &http.Server{
-		Addr:    string(port),
+		Addr:    ":" + string(port),
 		Handler: http.HandlerFunc(sg.LoadBalancer),
 	}
 

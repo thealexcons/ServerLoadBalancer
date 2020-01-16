@@ -98,7 +98,7 @@ func (s *ServerGroup) AddNode(nodeUrl string, weight int) {
 	proxy := httputil.NewSingleHostReverseProxy(addr)
 	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, e error) {
 		log.Printf("[%s] %s\n", addr.Host, e.Error())
-		retries := GetRetryFromContext(r)
+		retries := getRetryFromContext(r)
 		if retries < s.retries {
 			select {
 			case <-time.After(10 * time.Millisecond):
@@ -111,7 +111,7 @@ func (s *ServerGroup) AddNode(nodeUrl string, weight int) {
 		// after n retries, mark this backend as down
 		s.markBackendStatus(addr, false)
 
-		atts := GetAttemptsFromContext(r)
+		atts := getAttemptsFromContext(r)
 		log.Printf("%s(%s) Retrying %d\n", r.RemoteAddr, r.URL.Path, attempts)
 		ctx := context.WithValue(r.Context(), attempts, atts+1)
 		s.LoadBalancer(w, r.WithContext(ctx))
@@ -129,7 +129,7 @@ func (s *ServerGroup) AddNode(nodeUrl string, weight int) {
 
 // LoadBalancer starts load balancing the server group
 func (s *ServerGroup) LoadBalancer(w http.ResponseWriter, r *http.Request) {
-	attempts := GetAttemptsFromContext(r)
+	attempts := getAttemptsFromContext(r)
 	if attempts > s.retries {
 		log.Printf("%s(%s) Max attempts reached, terminating\n", r.RemoteAddr, r.URL.Path)
 		http.Error(w, "The service is unavailable.", http.StatusServiceUnavailable)

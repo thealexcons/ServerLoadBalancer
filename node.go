@@ -11,7 +11,7 @@ import (
 
 type node struct {
 	address  *url.URL
-	weight   uint
+	weight   int
 	alive    bool
 	mutex    sync.RWMutex
 	revProxy *httputil.ReverseProxy
