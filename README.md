@@ -13,5 +13,10 @@ You can `go get github.com/thealexcons/server-load-balancer` to use this package
 ## Usage
 If you would like to use this package in your own code, take a look at `main.go` in the `example` directory for a self-explanatory and commented example usage of the package.
 
-It can also be used as a command line tool, by building the `app.go` file in the `example` directory. I am in the process of building a CLI app for this load balancer, which I will link to when it is done.
+It can also be used as a command line tool, by building the `app.go` file in the `example` directory, by doing `go build app.go`.
 
+I am in the process of building a CLI app for this load balancer, which I will link to when it is done. For now, you can use this by supplying two command line arguments: the path to a file containing the node addresses (and weights), and the port number for the load balancer to listen on:
+
+`./app -nodes=nodes.txt -port=8080`
+
+You can see the format of `nodes.txt` in the `example` directory.
