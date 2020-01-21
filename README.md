@@ -24,3 +24,8 @@ You can see the format of `nodes.txt` in the `example` directory.
 ## Some notes
 
 The current code only serves HTTP requests, not HTTPS requests. So if you want to distribute requests to HTTPS endpoints, you must use the  `http.ListenAndServeTLS()` method, supplying an SSL certificate. I will probably add a feature that will allow an optional command line argument to an SSL certificate path some time soon, since it should be easy to do.
+
+## Roadmap
+
+- [ ] Add support for HTTPS traffic
+- [ ] Add scheduling algorithm based on geolocation 
